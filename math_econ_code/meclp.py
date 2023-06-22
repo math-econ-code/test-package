@@ -27,11 +27,13 @@ def load_stigler_data(verbose=False):
         print('\nDaily nutrient requirement:')
         print(allowance)
     return({'N_i_j':thedata.iloc[:-1, 4:].fillna(0).transpose().values,
-           'd_i':np.array(allowance),
-           'c_j':np.ones(len(commodities)),
+            'd_i':np.array(allowance),
+            'c_j':np.ones(len(commodities)),
             'nbi':len(allowance),
             'nbj':len(commodities),
-            'names_j':commodities})
+            'names_i': list(thedata.columns)[4:],
+            'names_j':commodities}) 
+
 
 def print_optimal_diet(q_j):
     print('***Optimal solution***')
@@ -65,6 +67,10 @@ class Tableau():
             return 0.0
         else:
             return float(self.base[thevar].evalf(subs = {variable:0.0 for variable in self.nonbasic} ))
+
+    def display(self):
+        for i in self.base:
+            print(i,' = ' ,round_expr(self.base[i],2))
             
     def print_solution(self,title=None):
         if not (title is None):
